@@ -1,9 +1,8 @@
 <div class="h-full bg-red-100">
   <p>messages</p>
   <div class="flex flex-col justify-end h-full">
-    <app-message-box
-      *ngFor="let message of messages"
-      [message]="message"
-    ></app-message-box>
+    <ng-container *ngFor="let message of messages">
+      <app-message-box *ngIf="showMessage(message)" [message]="message" />
+    </ng-container>
   </div>
 </div>

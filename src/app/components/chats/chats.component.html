@@ -1,1 +1,11 @@
-<p class="w-full bg-light">chats works!</p>
+<div class="w-full h-full bg-lighter">
+  <ul>
+    <li
+      *ngFor="let chat of chats"
+      class="hover:cursor-pointer"
+      (click)="selectChat(chat.name)"
+    >
+      <app-chat-box [chat]="chat" [selected]="chat.name === selected" />
+    </li>
+  </ul>
+</div>
