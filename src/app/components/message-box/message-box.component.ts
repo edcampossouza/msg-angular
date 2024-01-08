@@ -14,7 +14,8 @@ import { CommonModule } from '@angular/common';
 export class MessageBoxComponent {
   user: User;
   constructor(private userService: UserService) {
-    this.user = this.userService.getUser();
+    // make sure this component is only rendered when the user is logged in
+    this.user = this.userService.getUser()!;
   }
   @Input({ required: true }) message!: Message;
 }
