@@ -39,14 +39,21 @@ export class UserService {
     );
   }
 
-  signup(username: string, password: string) {
-    this.httpClient
-      .post<LoginResponseDTO>(`${environment.apiUrl}/auth/signup`, {
+  signup(username: string, password: string): Observable<LoginResponseDTO> {
+    const obs = this.httpClient.post<LoginResponseDTO>(
+      `${environment.apiUrl}/auth/signup`,
+      {
         username,
         password,
+      }
+    );
+
+    return obs.pipe(
+      tap((u) => {
+        localStorage.setItem('token', u.token);
+        localStorage.setItem('user', JSON.stringify(u.user));
+        this.user = u.user;
       })
-      .subscribe((r) => {
-        console.log(r);
-      });
+    );
   }
 }

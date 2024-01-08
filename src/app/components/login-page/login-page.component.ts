@@ -32,9 +32,21 @@ export class LoginPageComponent {
     if (this.router.url === '/login') {
       this.login();
     } else if (this.router.url === '/signup') {
-      const { username, password } = this.loginForm.value;
-      this.userService.signup(username || '', password || '');
+      this.signUp();
     }
+  }
+
+  signUp() {
+    const { username, password, confirmPassword } = this.loginForm.value;
+    if (confirmPassword !== password) return alert("Passwords don't match");
+    this.userService.signup(username || '', password || '').subscribe({
+      next: () => {
+        this.router.navigate(['/']);
+      },
+      error: () => {
+        alert('Something went wrong');
+      },
+    });
   }
 
   login() {
