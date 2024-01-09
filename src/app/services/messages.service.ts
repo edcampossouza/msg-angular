@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Message } from '../types/Message';
-import { Observable, Subject, map, tap } from 'rxjs';
+import { Observable, Subject, map, tap, repeat, delay } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   SendMessageDTO,
@@ -14,9 +14,36 @@ import {
 export class MessagesService {
   messages: Message[] = [];
   messagesSubject = new Subject<Message[]>();
+  lastMsgId = -Infinity;
 
   constructor(private httpClient: HttpClient) {
-    this.fetchAllMessages().subscribe(() => {});
+    this.fetchAllMessages().subscribe({
+      next: () => this.beginMessageRefresh(),
+    });
+  }
+
+  beginMessageRefresh() {
+    const obs = this.httpClient
+      .get<Message[]>(
+        `${environment.apiUrl}/messages?type=all&after=${this.lastMsgId}`,
+        this.getOptions()
+      )
+      .subscribe({
+        next: (msgs) => {
+          this.updateMessages([...this.messages, ...msgs]);
+          setTimeout(() => this.beginMessageRefresh(), 5 * 1000);
+        },
+        error: () => setTimeout(() => this.beginMessageRefresh(), 5 * 1000),
+      });
+  }
+
+  updateMessages(lst: Message[]) {
+    this.messages = lst;
+    this.messagesSubject.next(lst);
+    this.lastMsgId = this.messages.reduce(
+      (prev, curr) => Math.max(prev, curr.messageId),
+      this.lastMsgId
+    );
   }
 
   fetchAllMessages(): Observable<Message[]> {
@@ -27,6 +54,10 @@ export class MessagesService {
 
     return obs.pipe(
       tap((msgs) => {
+        this.lastMsgId = msgs.reduce(
+          (prev, curr) => Math.max(prev, curr.messageId),
+          this.lastMsgId
+        );
         this.messages = msgs;
         this.messagesSubject.next(msgs);
       })
@@ -54,6 +85,7 @@ export class MessagesService {
         const msgs = [...this.messages, msg];
         this.messagesSubject.next(msgs);
         this.messages = msgs;
+        this.lastMsgId = Math.max(this.lastMsgId, msg.messageId);
       }),
       map((x) => x.message)
     );
