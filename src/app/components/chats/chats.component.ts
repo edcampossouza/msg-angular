@@ -4,6 +4,7 @@ import { chats } from '../../mock/chats-mock';
 import { CommonModule } from '@angular/common';
 import { ChatBoxComponent } from '../chat-box/chat-box.component';
 import { UiService } from '../../services/ui.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-chats',
@@ -13,11 +14,14 @@ import { UiService } from '../../services/ui.service';
   styleUrl: './chats.component.css',
 })
 export class ChatsComponent {
-  chats: Chat[] = chats;
+  chats: Chat[] = [];
   selected?: string;
 
-  constructor(private ui: UiService) {
+  constructor(private ui: UiService, private userService: UserService) {
     this.ui.onSelectChat().subscribe((name) => (this.selected = name));
+    this.userService.onFetchUsers().subscribe((u) => {
+      this.chats = u.map((user) => ({ name: user.username }));
+    });
   }
 
   selectChat(name: string) {

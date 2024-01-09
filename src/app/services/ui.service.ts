@@ -5,14 +5,20 @@ import { Observable, Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class UiService {
-  private selected = new Subject<string>();
+  private selectedSubject = new Subject<string>();
+  private selected?: string;
   constructor() {}
 
   toggleActiveChat(name: string) {
-    this.selected.next(name);
+    this.selected = name;
+    this.selectedSubject.next(name);
   }
-  
+
   onSelectChat(): Observable<string> {
-    return this.selected.asObservable();
+    return this.selectedSubject.asObservable();
+  }
+
+  getSelectedChat(): string | undefined {
+    return this.selected;
   }
 }
