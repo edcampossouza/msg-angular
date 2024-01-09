@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Message } from '../../types/Message';
 import { CommonModule } from '@angular/common';
 import { MessageBoxComponent } from '../message-box/message-box.component';
@@ -13,21 +13,23 @@ import { UserService } from '../../services/user.service';
   templateUrl: './messages.component.html',
   styleUrl: './messages.component.css',
 })
-export class MessagesComponent implements OnInit {
+export class MessagesComponent {
   constructor(
     private messageService: MessagesService,
     private ui: UiService,
     private userService: UserService
   ) {
     this.ui.onSelectChat().subscribe((name) => (this.activeChat = name));
-  }
-  activeChat?: string;
-  ngOnInit(): void {
-    this.messageService.fetchAllMessages().subscribe({
-      next: (m) => (this.messages = m),
-      error: () => alert('Problem fetching messages'),
+    this.messageService.onUpdateMessages().subscribe({
+      next: (msgs) => (this.messages = msgs),
+      error: (err) => {
+        console.log(err);
+        alert('Problem fetching messages');
+      },
     });
   }
+  activeChat?: string;
+
   messages: Message[] = [];
 
   showMessage(message: Message): boolean {
@@ -35,10 +37,10 @@ export class MessagesComponent implements OnInit {
     const currUser = this.userService.getUser()?.username;
     if (currUser === this.activeChat)
       return (
-        message.receiver.username === currUser &&
+        message.recipient.username === currUser &&
         message.sender.username === currUser
       );
-    return [message.receiver.username, message.sender.username].includes(
+    return [message.recipient.username, message.sender.username].includes(
       this.activeChat
     );
   }

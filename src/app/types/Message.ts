@@ -8,5 +8,5 @@ export type Message = {
   createdAt: string;
   text: string;
   sender: Participant;
-  receiver: Participant;
+  recipient: Participant;
 };

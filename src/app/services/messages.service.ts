@@ -1,26 +1,40 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { UserService } from './user.service';
 import { Message } from '../types/Message';
-import { Observable, tap } from 'rxjs';
+import { Observable, Subject, map, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { SendMessageDTO } from '../types/SendMessageDTO';
+import {
+  SendMessageDTO,
+  SendMessageResponseDTO,
+} from '../types/SendMessageDTO';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MessagesService {
   messages: Message[] = [];
-  constructor(
-    private httpClient: HttpClient,
-    private userService: UserService
-  ) {}
+  messagesSubject = new Subject<Message[]>();
+
+  constructor(private httpClient: HttpClient) {
+    this.fetchAllMessages().subscribe(() => {});
+  }
 
   fetchAllMessages(): Observable<Message[]> {
-    return this.httpClient.get<Message[]>(
+    const obs = this.httpClient.get<Message[]>(
       `${environment.apiUrl}/messages?type=all`,
       this.getOptions()
     );
+
+    return obs.pipe(
+      tap((msgs) => {
+        this.messages = msgs;
+        this.messagesSubject.next(msgs);
+      })
+    );
+  }
+
+  onUpdateMessages(): Observable<Message[]> {
+    return this.messagesSubject.asObservable();
   }
 
   sendMessage(recipient: string, text: string): Observable<Message> {
@@ -28,13 +42,21 @@ export class MessagesService {
       recipient,
       text,
     };
-    const obs = this.httpClient.post<Message>(
+
+    const obs = this.httpClient.post<SendMessageResponseDTO>(
       `${environment.apiUrl}/messages`,
       payload,
       this.getOptions()
     );
-    obs.pipe(tap((msg) => this.messages.push(msg)));
-    return obs;
+
+    return obs.pipe(
+      tap(({ message: msg }) => {
+        const msgs = [...this.messages, msg];
+        this.messagesSubject.next(msgs);
+        this.messages = msgs;
+      }),
+      map((x) => x.message)
+    );
   }
 
   getOptions() {
