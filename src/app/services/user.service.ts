@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LoginResponseDTO } from '../types/LoginResponse.dto';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +15,11 @@ export class UserService {
   userSubject = new BehaviorSubject<string>('');
   usersSubject = new BehaviorSubject<User[]>([]);
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private router: Router) {
     this.init();
+    router.events.subscribe(() => {
+      this.init();
+    });
   }
 
   private init(): void {
