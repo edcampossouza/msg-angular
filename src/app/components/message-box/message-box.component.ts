@@ -4,6 +4,19 @@ import { UserService } from '../../services/user.service';
 import { User } from '../../types/User';
 import { CommonModule } from '@angular/common';
 
+const timeOptions: Intl.DateTimeFormatOptions = {
+  hour: 'numeric',
+  minute: 'numeric',
+};
+
+const dateTimeOptions: Intl.DateTimeFormatOptions = {
+  day: 'numeric',
+  month: 'numeric',
+  year: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+};
+
 @Component({
   selector: 'app-message-box',
   standalone: true,
@@ -18,4 +31,12 @@ export class MessageBoxComponent {
     this.user = this.userService.getUser()!;
   }
   @Input({ required: true }) message!: Message;
+
+  formatTime(time: string): string {
+    const todayDate = new Date();
+    const dt = new Date(time);
+    if (todayDate.toLocaleDateString() === dt.toLocaleDateString())
+      return dt.toLocaleString(undefined, timeOptions);
+    return dt.toLocaleString(undefined, dateTimeOptions);
+  }
 }

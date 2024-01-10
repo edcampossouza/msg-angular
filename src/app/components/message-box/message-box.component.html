@@ -1,10 +1,15 @@
-<div
-  [ngClass]="
-    message.sender.username === user.username
-      ? 'bg-light text-right'
-      : 'bg-lighter text-left'
-  "
-  class="mb-1"
->
-  {{ message.text }}
+<div class="w-full flex flex-col">
+  <div
+    [ngClass]="
+      message.sender.username === user.username
+        ? 'bg-light text-right self-end'
+        : 'bg-lighter text-left'
+    "
+    class="mb-1 w-2/3 p-1 md:w-1/2 rounded-md ml-1 mr-1"
+  >
+    {{ message.text }}
+    <div class="flex justify-end text-xs opacity-70">
+      {{ formatTime(message.createdAt) }}
+    </div>
+  </div>
 </div>
