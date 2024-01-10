@@ -20,6 +20,7 @@ import { UserService } from '../../services/user.service';
 })
 export class MessagesComponent implements AfterViewChecked {
   autoScroll: boolean = false;
+  lastMsgScrolled = -1;
   constructor(
     private messageService: MessagesService,
     private ui: UiService,
@@ -41,6 +42,8 @@ export class MessagesComponent implements AfterViewChecked {
   ngAfterViewChecked(): void {
     if (this.autoScroll) {
       const msgId = this.view.last?.message.messageId;
+      if (msgId === this.lastMsgScrolled) return;
+      this.lastMsgScrolled = msgId;
       const element = document.getElementById(msgId + '');
       element?.scrollIntoView();
     }
