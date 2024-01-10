@@ -2,7 +2,7 @@
   <div class="flex flex-col justify-end h-full">
     <div class="h-auto overflow-y-auto">
       <div *ngIf="activeChat !== undefined">
-        <div class="text-center text-lg">
+        <div class="text-center text-lg text-accent">
           This is your message history with {{ activeChat }}
         </div>
         <ng-container *ngFor="let message of messages">
@@ -14,7 +14,9 @@
         </ng-container>
       </div>
       <div *ngIf="activeChat === undefined">
-        <div class="text-center text-lg">Select a chat from the sidebar</div>
+        <div class="text-center text-lg text-accent">
+          Select a chat from the sidebar
+        </div>
       </div>
     </div>
   </div>

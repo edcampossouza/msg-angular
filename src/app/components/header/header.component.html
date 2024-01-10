@@ -4,6 +4,12 @@
   <div>{{ user }}</div>
   <div class="flex gap-x-2">
     <label for="autoscroll">Auto Scroll</label>
-    <input id="autoscroll" type="checkbox" [checked]="autoScroll" (change)="changeAutoScroll()" />
+    <input
+      class="accent-accent"
+      id="autoscroll"
+      type="checkbox"
+      [checked]="autoScroll"
+      (change)="changeAutoScroll()"
+    />
   </div>
 </div>
