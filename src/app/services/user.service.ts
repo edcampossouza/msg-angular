@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { User } from '../types/User';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LoginResponseDTO } from '../types/LoginResponse.dto';
-import { Observable, Subject, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -11,7 +11,8 @@ import { environment } from '../../environments/environment';
 export class UserService {
   user: User | undefined;
   users: User[] = [];
-  usersSubject = new Subject<User[]>();
+  userSubject = new BehaviorSubject<string>('');
+  usersSubject = new BehaviorSubject<User[]>([]);
 
   constructor(private httpClient: HttpClient) {
     this.init();
@@ -20,7 +21,8 @@ export class UserService {
   private init(): void {
     const userStr = localStorage.getItem('user');
     if (userStr) {
-      this.user = JSON.parse(userStr);
+      const userParsed = JSON.parse(userStr);
+      this.setUser(userParsed);
     }
     this.fetchUsers();
   }
@@ -36,6 +38,15 @@ export class UserService {
 
   getUser(): User | undefined {
     return this.user;
+  }
+
+  setUser(user: User) {
+    this.user = user;
+    this.userSubject.next(user.username);
+  }
+
+  onUserName(): Observable<string> {
+    return this.userSubject.asObservable();
   }
 
   onFetchUsers(): Observable<User[]> {

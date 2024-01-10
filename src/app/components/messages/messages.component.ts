@@ -1,4 +1,9 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  QueryList,
+  ViewChildren,
+  AfterViewChecked,
+} from '@angular/core';
 import { Message } from '../../types/Message';
 import { CommonModule } from '@angular/common';
 import { MessageBoxComponent } from '../message-box/message-box.component';
@@ -13,24 +18,40 @@ import { UserService } from '../../services/user.service';
   templateUrl: './messages.component.html',
   styleUrl: './messages.component.css',
 })
-export class MessagesComponent {
+export class MessagesComponent implements AfterViewChecked {
+  autoScroll: boolean = false;
   constructor(
     private messageService: MessagesService,
     private ui: UiService,
     private userService: UserService
   ) {
     this.ui.onSelectChat().subscribe((name) => (this.activeChat = name));
+    this.ui.onChangeAutoScroll().subscribe((x) => (this.autoScroll = x));
     this.messageService.onUpdateMessages().subscribe({
-      next: (msgs) => (this.messages = msgs),
+      next: (msgs) => {
+        this.messages = msgs;
+      },
       error: (err) => {
         console.log(err);
         alert('Problem fetching messages');
       },
     });
   }
+
+  ngAfterViewChecked(): void {
+    if (this.autoScroll) {
+      const msgId = this.view.last?.message.messageId;
+      const element = document.getElementById(msgId + '');
+      element?.scrollIntoView();
+    }
+  }
+
   activeChat?: string;
 
   messages: Message[] = [];
+
+  @ViewChildren(MessageBoxComponent) view: QueryList<MessageBoxComponent> =
+    new QueryList();
 
   showMessage(message: Message): boolean {
     if (!this.activeChat) return false;

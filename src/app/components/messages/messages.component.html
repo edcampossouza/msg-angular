@@ -6,7 +6,11 @@
           This is your message history with {{ activeChat }}
         </div>
         <ng-container *ngFor="let message of messages">
-          <app-message-box *ngIf="showMessage(message)" [message]="message" />
+          <app-message-box
+            *ngIf="showMessage(message)"
+            [message]="message"
+            [id]="message.messageId"
+          />
         </ng-container>
       </div>
       <div *ngIf="activeChat === undefined">

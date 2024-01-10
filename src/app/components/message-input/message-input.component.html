@@ -3,12 +3,16 @@
   [formGroup]="formGroup"
   class="flex justify-between h-12"
 >
-  <input
-    class=""
+  <textarea
+    class="flex-auto bg-light rounded-md focus:outline-none resize-none"
     type="text"
     formControlName="message"
     placeholder="message"
-    class="flex-auto bg-light"
-  />
-  <button class="hover:bg-light bg-white">send</button>
+  ></textarea>
+  <button
+    class="bg-darker hover:bg-dark flex items-center pl-2 pr-2 rounded-md disabled:bg-lighter"
+    [disabled]="sendTo === undefined"
+  >
+    <mat-icon class="text-lighter">send</mat-icon>
+  </button>
 </form>

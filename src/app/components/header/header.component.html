@@ -1,1 +1,9 @@
-<p class="fixed top-0 h-12 w-full bg-darker text-light opacity-20">header works!</p>
+<div
+  class="fixed top-0 h-12 w-full bg-darker text-light flex justify-around items-center"
+>
+  <div>{{ user }}</div>
+  <div class="flex gap-x-2">
+    <label for="autoscroll">Auto Scroll</label>
+    <input id="autoscroll" type="checkbox" [checked]="autoScroll" (change)="changeAutoScroll()" />
+  </div>
+</div>

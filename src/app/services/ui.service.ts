@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UiService {
-  private selectedSubject = new Subject<string>();
+  private selectedSubject = new BehaviorSubject<string | undefined>(undefined);
   private selected?: string;
+  autoScrollSubject = new BehaviorSubject<boolean>(true);
   constructor() {}
 
   toggleActiveChat(name: string) {
@@ -14,11 +15,19 @@ export class UiService {
     this.selectedSubject.next(name);
   }
 
-  onSelectChat(): Observable<string> {
+  onSelectChat(): Observable<string | undefined> {
     return this.selectedSubject.asObservable();
   }
 
   getSelectedChat(): string | undefined {
     return this.selected;
+  }
+
+  setAutoScroll(value: boolean) {
+    this.autoScrollSubject.next(value);
+  }
+
+  onChangeAutoScroll(): Observable<boolean> {
+    return this.autoScrollSubject.asObservable();
   }
 }
