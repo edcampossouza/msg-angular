@@ -19,7 +19,6 @@ export class HeaderComponent {
     this.uiService.onChangeAutoScroll().subscribe((x) => (this.autoScroll = x));
     this.userService.onUserName().subscribe((x) => {
       this.user = x;
-      console.log(x);
     });
   }
   changeAutoScroll() {

@@ -33,7 +33,6 @@ export class MessagesComponent implements AfterViewChecked {
         this.messages = msgs;
       },
       error: (err) => {
-        console.log(err);
         alert('Problem fetching messages');
       },
     });
