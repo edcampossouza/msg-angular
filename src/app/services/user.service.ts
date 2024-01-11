@@ -92,6 +92,16 @@ export class UserService {
     );
   }
 
+  isLoggedIn(): boolean {
+    return localStorage.getItem('token') !== null;
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.userSubject.next('');
+  }
+
   getOptions() {
     return {
       headers: new HttpHeaders({

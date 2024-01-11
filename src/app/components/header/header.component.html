@@ -2,7 +2,7 @@
   class="fixed top-0 h-12 w-full bg-darker text-light flex justify-around items-center"
 >
   <div>{{ user }}</div>
-  <div class="flex gap-x-2">
+  <div *ngIf="showOptions()" class="flex gap-x-2">
     <label for="autoscroll">Auto Scroll</label>
     <input
       class="accent-accent"
@@ -12,4 +12,11 @@
       (change)="changeAutoScroll()"
     />
   </div>
+  <button
+    *ngIf="showOptions()"
+    class="bg-dark p-1 rounded-md opacity-80 hover:opacity-100"
+    (click)="logout()"
+  >
+    Logout
+  </button>
 </div>
