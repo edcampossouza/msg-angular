@@ -4,15 +4,15 @@
   class="flex justify-between h-12"
 >
   <textarea
-    class="flex-auto bg-light rounded-md focus:outline-none resize-none"
+    class="flex-auto bg-darker rounded-md focus:outline-none resize-none text-lighter"
     type="text"
     formControlName="message"
     placeholder="message"
   ></textarea>
   <button
-    class="bg-darker hover:bg-dark flex items-center pl-2 pr-2 rounded-md disabled:bg-lighter"
+    class="hover:bg-light bg-lighter flex items-center pl-2 pr-2 rounded-md disabled:bg-lighter"
     [disabled]="sendTo === undefined"
   >
-    <mat-icon class="text-lighter">send</mat-icon>
+    <mat-icon class="text-accent">send</mat-icon>
   </button>
 </form>
