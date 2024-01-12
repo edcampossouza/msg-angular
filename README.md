@@ -2,6 +2,9 @@
 
 # Features
 
+![Screenshot](docs/a1.png)
+![Screenshot](docs/a2.png)
+
 ## Fetch latest messages from the backend
  - Fetch all messages on log in
  - Then, every five seconds, fetch only the messages after the last one, to reduce data traffic
