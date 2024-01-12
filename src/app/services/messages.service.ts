@@ -15,8 +15,13 @@ export class MessagesService {
   messages: Message[] = [];
   messagesSubject = new Subject<Message[]>();
   lastMsgId = -Infinity;
+  private timeoutRef: ReturnType<typeof setTimeout> | null = null;
 
   constructor(private httpClient: HttpClient) {
+    this.init();
+  }
+
+  init() {
     this.fetchAllMessages().subscribe({
       next: () => this.beginMessageRefresh(),
     });
@@ -31,7 +36,13 @@ export class MessagesService {
       .subscribe({
         next: (msgs) => {
           this.updateMessages([...this.messages, ...msgs]);
-          setTimeout(() => this.beginMessageRefresh(), 5 * 1000);
+          if (this.timeoutRef) {
+            clearInterval(this.timeoutRef);
+          }
+          this.timeoutRef = setTimeout(
+            () => this.beginMessageRefresh(),
+            5 * 1000
+          );
         },
         error: () => setTimeout(() => this.beginMessageRefresh(), 5 * 1000),
       });
